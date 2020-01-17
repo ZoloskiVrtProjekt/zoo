@@ -106,7 +106,6 @@ export default {
     },
     created() {
        this.citaj()
-       console.log(firebase.auth().currentUser.email)
     },
 
     computed: {
