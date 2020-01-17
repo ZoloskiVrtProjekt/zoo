@@ -11,6 +11,11 @@ Također je napravljen webshop za posjetitelje zološkog vrta kako bi mogli kupi
 ```
 Bootstrap, Firebase , Vue, HTML, CSS, Javascript.
 ```
+## ZEIT.CO
+```
+https://zoo-nine-nu.now.sh/
+```
+
 ## Project setup
 ```
 npm install
