@@ -1,5 +1,16 @@
-# zoo
-
+# Sustav za vođenje zološkog vrta.
+## Članovi tima : Domagoj Muža i Vedran Nejedly
+## Šifra tima : R5
+## Opis aplikacije :
+```
+Aplikacija se sastoji od evidencije životinja , njihove hrane , lijekova te samih nastambi u koje su životinje smještene.
+Također se unutar aplikacije nalazi evidencija zaposlenika te njihova uloga(admin/zaposlenik). Samo admin može brisati i dodavati zaposlenike.
+Također je napravljen webshop za posjetitelje zološkog vrta kako bi mogli kupiti suvenir. Potrebno je unjeti ispravan e-mail pri narudžbi kako bi dobili potvrdu o primitku te isporuci pošiljke to jest suvenira.
+```
+## Korištene tehnologije : 
+```
+Bootstrap, Firebase , Vue, HTML, CSS, Javascript.
+```
 ## Project setup
 ```
 npm install
