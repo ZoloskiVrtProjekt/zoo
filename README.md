@@ -1,6 +1,6 @@
 # Sustav za vođenje zološkog vrta.
-# Admin, email: testAdmin@gmail.com, pass: 123456
-# Zaposlenik, email: testZaposlenik@gmail.com, pass: 123456
+# Admin login, email: testAdmin@gmail.com, pass: 123456
+# Zaposlenik login, email: testZaposlenik@gmail.com, pass: 123456
 ## Članovi tima : Domagoj Muža i Vedran Nejedly
 ## Šifra tima : R5
 ## Opis aplikacije :
