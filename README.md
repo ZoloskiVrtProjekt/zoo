@@ -11,7 +11,7 @@ Također je napravljen webshop za posjetitelje zološkog vrta kako bi mogli kupi
 ```
 ## Korištene tehnologije : 
 ```
-Bootstrap, Firebase , Vue, HTML, CSS, Javascript.
+Bootstrap, Firebase , Vue, HTML, CSS, Javascript, Nodemailer, SweetAlert2, Vuex.
 ```
 ## ZEIT.CO
 ```
