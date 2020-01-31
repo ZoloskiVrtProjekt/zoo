@@ -25,11 +25,11 @@
                     </select>
                 </div>
                 <div class="col">
-                    <input v-model="tretman.datumPocetka" type="date" class="form-control" placeholder="Datum pocetka">
-                    <input v-model="tretman.datumZavrsetka" type="date" class="form-control" placeholder="Datum zavrsetka">
+                    <input v-model="tretman.datumPocetka" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" placeholder="Datum pocetka">
+                    <input v-model="tretman.datumZavrsetka" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" placeholder="Datum zavrsetka">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template> 
@@ -56,7 +56,7 @@ export default {
         }
     },
     methods: {
-        validTest(){
+        podatciUneseni(){
             for(var key in this.tretman){
                 if(!this.tretman[key]){ 
                     return true
@@ -65,12 +65,13 @@ export default {
             return false
         },
 
-        dataPostoji(){
+        upisiPodatke(){
             this.success=''
             this.error=''
             //u slučaju da se pokuša dodati tretman za nepostojeću životinju nas redirecta na stranicu životinje
             db.collection('zivotinje').where('broj','==',this.$route.params.brojZivotinje).get()
             .then((querySnapshot) =>{
+                console.log(querySnapshot)
                 if(querySnapshot.empty){
                     this.error= 'Životinja više ne postoji'
                      setTimeout(() =>{
@@ -78,7 +79,7 @@ export default {
                     },1500)
                     
                     
-                }else if(this.validTest()){
+                }else if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
                 }
                 //datum početka tretmana ne može biti nakon završetka

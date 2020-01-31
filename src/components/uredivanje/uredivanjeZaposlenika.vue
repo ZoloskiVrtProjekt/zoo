@@ -21,7 +21,7 @@
                     <input v-model="zaposlenik.adresa" type="text" class="form-control" placeholder="Adresa">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Spremmi</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Spremi</button>
         </form>
     </div>
 </template>
@@ -38,15 +38,18 @@ export default {
         }
     },
     created() {
-        let ref = db.collection('zaposlenici').doc(this.$route.params.id)
-        ref.get().then((doc) =>{
-               this.zaposlenik = doc.data()
-      });
+        this.dohvatiZaposlenika()
             
      
     },
     methods: {
-        validTest(){
+        dohvatiZaposlenika(){
+            let ref = db.collection('zaposlenici').doc(this.$route.params.id)
+            ref.get().then((doc) =>{
+                this.zaposlenik = doc.data()
+            });
+        },
+        podatciUneseni(){
             for(var key in this.zaposlenik){
                 if(!this.zaposlenik[key]){ 
                     return true
@@ -54,17 +57,13 @@ export default {
             }
             return false
         },
-        dataPostoji(){
-            if(this.validTest()){
+        upisiPodatke(){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }
             else{
-            db.collection('zaposlenici').doc(this.$route.params.id).update({
-                        ime: this.zaposlenik.ime,
-                        prezime: this.zaposlenik.prezime,
-                        brojMobitela: this.zaposlenik.brojMobitela,
-                        adresa: this.zaposlenik.adresa
-                     }).then(() =>{
+            db.collection('zaposlenici').doc(this.$route.params.id).update(this.zaposlenik)
+            .then(() =>{
                         this.$router.go(-1)
                         
                     })

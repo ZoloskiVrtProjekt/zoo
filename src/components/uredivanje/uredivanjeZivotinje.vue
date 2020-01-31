@@ -30,9 +30,10 @@
                     </select>
                     <input v-model="zivotinja.prehrana" type="text" class="form-control" placeholder="Prehrana">
                     <input v-model="zivotinja.datumRodenja" type="date" class="form-control" placeholder="Datum rođenja">
+                    <input v-model="zivotinja.datumDolazka" type="date" class="form-control" placeholder="Datum dolazka u zoo">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Spremmi</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Spremmi</button>
         </form>
     </div>
 </template>
@@ -52,22 +53,24 @@ export default {
         }
     },
     created() {
-        let ziv = db.collection('zivotinje').doc(this.$route.params.id)
-        ziv.get().then((doc) =>{
-               this.zivotinja = doc.data()
-               this.nastambaOld = doc.data().nastamba 
-        });
-        let nast = db.collection('nastambe').where('slobodnaMjesta','>',0)
-            nast.get().then(snapshot => {
-                snapshot.forEach(doc => {
-                let nastamba = doc.data()
-                 this.nastambe.push(nastamba)
-            });
-        }) 
-     
+        this.dohvatiZivotinju
     },
     methods: {
-        validTest(){
+        dohvatiZivotinju(){
+            let ziv = db.collection('zivotinje').doc(this.$route.params.id)
+            ziv.get().then((doc) =>{
+                this.zivotinja = doc.data()
+                this.nastambaOld = doc.data().nastamba 
+            });
+            let nast = db.collection('nastambe').where('slobodnaMjesta','>',0)
+                nast.get().then(snapshot => {
+                    snapshot.forEach(doc => {
+                    let nastamba = doc.data()
+                    this.nastambe.push(nastamba)
+                });
+            }) 
+        },
+        podatciUneseni(){
             for(var key in this.zivotinja){
                 if(!this.zivotinja[key]){ 
                     return true
@@ -75,50 +78,42 @@ export default {
             }
             return false
         },
-        dataPostoji(){
-            if(this.validTest()){
+        upisiPodatke(){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }
             else{
                 if(this.nastambaOld !== this.zivotinja.nastamba){
                     db.collection('nastambe').where('ime','==',this.nastambaOld.toLowerCase()).get()
-                            .then((querySnapshot) =>{
-                                querySnapshot.forEach((doc) =>{                             
-                                    let id = doc.id
-                                    let inc = doc.data().slobodnaMjesta
-                                    inc++
-                                        db.collection('nastambe').doc(id).update({
-                                            slobodnaMjesta: inc
-                                        })
+                        .then((querySnapshot) =>{
+                            querySnapshot.forEach((doc) =>{                             
+                                let id = doc.id
+                                let inc = doc.data().slobodnaMjesta
+                                inc++
+                                    db.collection('nastambe').doc(id).update({
+                                        slobodnaMjesta: inc
+                                    })
                                     
-                                })
                             })
+                        })
                     db.collection('nastambe').where('ime','==',this.zivotinja.nastamba.toLowerCase()).get()
-                            .then((querySnapshot) =>{
-                                querySnapshot.forEach((doc) =>{                             
-                                    let id = doc.id
-                                    let dec = doc.data().slobodnaMjesta
-                                    dec--
-                                        db.collection('nastambe').doc(id).update({
-                                            slobodnaMjesta: dec
-                                        })
-                                    
-                                })
+                        .then((querySnapshot) =>{
+                            querySnapshot.forEach((doc) =>{                             
+                                let id = doc.id
+                                let dec = doc.data().slobodnaMjesta
+                                dec--
+                                    db.collection('nastambe').doc(id).update({
+                                        slobodnaMjesta: dec
+                                    })
+                                        
                             })
+                        })
                 }
-            db.collection('zivotinje').doc(this.$route.params.id).update({
-                         broj: this.zivotinja.broj,
-                         ime: this.zivotinja.ime,
-                         pasmina: this.zivotinja.pasmina,
-                         tezina: this.zivotinja.tezina,
-                         prehrana: this.zivotinja.prehrana,
-                         datumRodenja: this.zivotinja.datumRodenja,
-                         nastamba: this.zivotinja.nastamba.toLowerCase()
-                     }).then(() =>{
-                        this.$router.push('/')
-                        
-                    })
-        }
+                db.collection('zivotinje').doc(this.$route.params.id).update(this.zivotinja)
+                .then(() =>{
+                    this.$router.push('/')
+                })
+            }
         },
         capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);

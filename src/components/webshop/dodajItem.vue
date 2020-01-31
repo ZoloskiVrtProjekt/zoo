@@ -4,7 +4,7 @@
             <button class="btn btn-danger" @click="$router.go(-1)">Nazad</button>
         </div>
         <div class="naslov">
-            <h2>Dodavanje itema</h2>
+            <h2>Dodavanje proizvoda</h2>
         </div>
         <div v-if="error" class="error">
             <h3>{{error}}</h3>
@@ -17,14 +17,14 @@
         <form>
             <div class="row">
                 <div class="col">
-                    <input v-model="proizvod.naziv" type="string" class="form-control" placeholder="Naziv itema">
-                    <input v-model="proizvod.cijena" type="number" class="form-control" placeholder="Cijena itema">
+                    <input v-model="proizvod.naziv" type="string" class="form-control" placeholder="Naziv proizvoda">
+                    <input v-model="proizvod.cijena" type="number" class="form-control" placeholder="Cijena proizvoda">
                 </div>
                 <div class="col">
                     <input type="file" @change="postaviImg" class="form-control" placeholder="Tip nastambe">
                 </div>              
             </div>
-            <button @click.prevent="data" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template> 
@@ -37,7 +37,7 @@ import firebase from 'firebase'
 
 
 export default {
-    name:'dodaj_lijek',
+    name:'dodaj_proizvod',
     data(){
         return{
             img:'',
@@ -57,7 +57,7 @@ export default {
         postaviImg(e){
             this.img= e.target.files[0]
         },
-        data(){
+        upisiPodatke(){
             var storageRef = firebase.storage().ref('slike/' + this.img.name);
 
             var uploadTask = storageRef.put(this.img)
@@ -104,36 +104,6 @@ export default {
                     return true
                 }
             return false
-        },
-
-        dataPostoji(){
-            this.success=''
-            this.error=''
-            
-            if(this.validTest()){
-                this.error= 'Sva polja moraju biti popunjena'
-            }else{
-                let ref = db.collection('nastambe').where('ime','==',this.nastamba.ime.toLowerCase())
-                ref.get().then((querySnapshot) =>{
-                if(!querySnapshot.empty){
-                    this.error= 'Nastamba sa unesenim imenom već postoji'
-
-                }else{
-                    this.error = ''
-                     db.collection('nastambe').add({
-                         ime: this.nastamba.ime.toLowerCase(),
-                         tip: this.nastamba.tip,
-                         brojMjesta: Number(this.nastamba.brojMjesta),
-                         slobodnaMjesta: Number(this.nastamba.brojMjesta)
-                     }).then(() =>{
-                        this.success= 'Lijek dodan'
-                        
-                    })
-                }
-            })
-            }
-            
-            
         },
 
 

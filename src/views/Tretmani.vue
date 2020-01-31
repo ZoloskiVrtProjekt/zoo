@@ -11,7 +11,7 @@
       
 
       <transition name="pokazi">
-        <h3 class="obavijest" v-if="obavijest" > Lijek obrisan </h3>
+        <h3 class="obavijest" v-if="obavijest" > Tretman obrisan </h3>
       </transition>
 
       
@@ -73,7 +73,7 @@ export default {
         this.obavijest = false
       }, 3000);
      },
-     citaj(){
+     dohvatiPodatke(){
        // dohvaćamo sve tretmane za odabranu životinju
       db.collection('tretmani').where('brojZivotinje','==',Number(this.$route.params.brojZivotinje))
         .onSnapshot(snapshot => {
@@ -97,7 +97,7 @@ export default {
 
   },
   created() {
-       this.citaj()
+       this.dohvatiPodatke()
     
     
   },

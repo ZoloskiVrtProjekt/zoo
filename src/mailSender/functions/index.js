@@ -16,13 +16,12 @@ let transporter = nodemailer.createTransport({
 
     exports.sendMail = functions.https.onCall((data, res) => {
         
-            // getting dolaznaAdresa email by query string
             const dolaznaAdresa = data.mail;
             const naslovEmaila = data.naslovEmaila
             const porukaEmaila = data.porukaEmaila
 
             const mailOptions = {
-                from: 'zootest.projekt@gmail.com', // Something like: Jane Doe <janedoe@gmail.com>
+                from: 'zootest.projekt@gmail.com',
                 to: dolaznaAdresa,
                 subject: naslovEmaila, // email naslovEmaila
                 text: porukaEmaila // email content in HTML
@@ -33,7 +32,7 @@ let transporter = nodemailer.createTransport({
                 if(erro){
                     return res.send(erro.toString());
                 }
-                console.log(res.send('Poslano'))
+
                 
             });            
     });
@@ -44,7 +43,6 @@ let transporter = nodemailer.createTransport({
             emailVerified: true,
             password: data.password,
           }).then(() =>{
-            console.log(res)
           })
           
     });
@@ -53,7 +51,6 @@ let transporter = nodemailer.createTransport({
         admin.auth().getUserByEmail(data.email)
         .then(function(userRecord) {
             admin.auth().deleteUser(userRecord.uid)
-            console.log(res)
           })
           
     });

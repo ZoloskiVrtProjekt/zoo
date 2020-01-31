@@ -19,7 +19,7 @@
               <div class="parametri">Ime: <b>{{lijek.ime}}</b></div>
               <div class="parametri">Tip: <b>{{lijek.tip}}</b></div>
 
-              <i @click="obrisiProizvod(lijek.id)" class="fas fa-trash-alt fa-lg" title="Obriši"></i>
+              <i @click="obrisiLijek(lijek.id)" class="fas fa-trash-alt fa-lg" title="Obriši"></i>
               
             </li>
           </ul>
@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    obrisiZivotinju(id){
+    obrisiLijek(id){
       db.collection('lijekovi').doc(id).delete()
       .then(() =>{
         this.obavijestObrisano()
@@ -63,7 +63,7 @@ export default {
       }, 3000);
     },
 
-    citaj(){
+    dohvatiPodatke(){
        // uzmemo tablicu zivotinje, dohvatimo ju i za svaki dokument(element tablice) spremimo podatke i id
       db.collection('lijekovi')
       .onSnapshot(snapshot => {
@@ -87,7 +87,7 @@ export default {
 
   },
   created() {
-    this.citaj()
+    this.dohvatiPodatke()
   },
   
    

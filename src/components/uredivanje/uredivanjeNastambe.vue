@@ -24,7 +24,7 @@
                     <input v-model="nastamba.brojMjesta" type="number" class="form-control" placeholder="Broj mjesta">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="unesiPodatke" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template> 
@@ -51,7 +51,7 @@ export default {
      
     },
     methods: {
-        validTest(){
+        podatciUneseni(){
             for(var key in this.zivotinja){
                 if(!this.zivotinja[key]){ 
                     return true
@@ -59,12 +59,12 @@ export default {
             }
             return false
         },
-        dataPostoji(){
+        unesiPodatke(){
             this.success=''
             this.error=''
             let razlika= Number
             
-            if(this.validTest()){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }else{
                         if(this.nastamba.brojMjesta !== this.mjestaOld){
@@ -85,17 +85,14 @@ export default {
                             slobodnaMjesta: Number(this.nastamba.slobodnaMjesta) + razlika
                         }).then(() =>{
                             this.success= 'Lijek dodan'
-                        })
-                    
+                        })    
                 }
             },
         capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-            
-        }
-        
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }            
     }
+}
 
 </script>
 

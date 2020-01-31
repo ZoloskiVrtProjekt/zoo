@@ -86,7 +86,7 @@ export default {
         this.obavijest = false
       }, 3000);
      },
-    citaj(){
+    dohvatiPodatke(){
       //slušamo tablicu nastambe
       db.collection('nastambe')
       .onSnapshot(snapshot => {
@@ -117,7 +117,7 @@ export default {
   },
 //u ciklusu created pozivamo funkciju čitaj koja dobavlja sve podatke
   created() {
-    this.citaj()
+    this.dohvatiPodatke()
   },
    
 }

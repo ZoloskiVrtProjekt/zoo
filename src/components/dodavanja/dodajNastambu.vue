@@ -24,7 +24,7 @@
                     <input v-model="nastamba.brojMjesta" type="number" class="form-control" placeholder="Broj mjesta">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template> 
@@ -51,7 +51,7 @@ export default {
         }
     },
     methods: {
-        validTest(){
+        podatciUneseni(){
             for(var key in this.nastamba){
                 if(!this.nastamba[key]){ 
                     return true
@@ -60,11 +60,11 @@ export default {
             return false
         },
 
-        dataPostoji(){
+        upisiPodatke(){
             this.success=''
             this.error=''
             
-            if(this.validTest()){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }else{
 

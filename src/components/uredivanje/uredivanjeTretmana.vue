@@ -14,7 +14,7 @@
                     <input v-model="tretman.datumZavrsetka" type="date" class="form-control" placeholder="Datum rođenja">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Spremmi</button>
+            <button @click.prevent="unesiPodatke" class="btn btn-primary my-1">Spremmi</button>
         </form>
     </div>
 </template>
@@ -38,7 +38,7 @@ export default {
      
     },
     methods: {
-        dataPostoji(){
+        unesiPodatke(){
             db.collection('tretmani').doc(this.$route.params.id).update({
                          datumPocetka: this.tretman.datumPocetka,
                          datumZavrsetka: this.tretman.datumZavrsetka

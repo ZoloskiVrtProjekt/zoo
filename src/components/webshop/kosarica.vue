@@ -72,6 +72,8 @@
 <script>
 import db from '@/firebase/init'
 import firebase from 'firebase'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 
 export default {
     data(){
@@ -92,7 +94,12 @@ export default {
         }
     },
     methods: {
-        validTest(){
+        dohvatiKosaricu(){
+            for( let i=0; i<this.kosarica.length; i++){
+                this.UkupnaCijena += this.kosarica[i].kolicina * this.kosarica[i].cijena
+            }
+        },
+        podatciUneseni(){
             for(var key in this.kupac){
                 if(!this.kupac[key]){ 
                     return true
@@ -117,13 +124,14 @@ export default {
             }
         },
         naruci(){
-            if(this.validTest()){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }else{
                     db.collection('narudzbe').add({
                         kosarica: this.kosarica,
                         kupac: this.kupac,
                         ukupnaCijena: this.UkupnaCijena,
+                        poslano: 'ne',
                         vrijeme: Date.now()
                     }).then(() =>{
 
@@ -132,27 +140,31 @@ export default {
 
                     var addMessage = firebase.functions().httpsCallable('sendMail');
                             addMessage({mail: this.kupac.email, naslovEmaila: naslov, porukaEmaila: poruka}).then(() => {
-                                alert("Narudžba uspješna");
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Provjerite email sandučić',
+                                    showConfirmButton: true,
+
+                                    })
                             });
 
                     this.$store.commit("isprazniKosaricu", []);
-                    this.$router.push('/webshop')
+                    this.$router.push('/')
                 })
             }
             
         },
         izbrisi(id, cijena, kolicina){
             this.UkupnaCijena -= cijena * kolicina
+            this.$store.commit("izbaciIzKosarice", id);
             this.kosarica = this.kosarica.filter(kosarica => {
             return kosarica.id != id
           })
         }
     },
     created() {
-        for( let i=0; i<this.kosarica.length; i++){
-            this.UkupnaCijena += this.kosarica[i].kolicina * this.kosarica[i].cijena
-        }
-        
+        this.dohvatiKosaricu()        
     },
 }
 </script>

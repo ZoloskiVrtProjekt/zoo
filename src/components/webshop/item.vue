@@ -5,7 +5,7 @@
                 <div class="card-block">
                     <p class="card-title">{{info.naziv}}</p>
                     <p class="card-text"> {{info.cijena}} Kn</p>
-                    <i v-if="$store.state.logged" @click="obrisiProizvod(info.id)" class="fas fa-trash-alt fa-lg" title="Obriši"></i>
+                    <i v-if="$store.state.logged" @click="obrisiProizvod(info.id, info.nazivSlike)" class="fas fa-trash-alt fa-lg" title="Obriši"></i>
                     <i v-if="!$store.state.logged" @click="dodajUKosaricu" class="fas fa-plus fa-lg" title="Dodaj u košaricu"></i>
                 </div>
             </div>
@@ -14,7 +14,7 @@
 
 <script>
 import db from '@/firebase/init'
-
+import firebase from 'firebase'
 
 export default {
     data(){
@@ -24,11 +24,9 @@ export default {
     },
     props:["info"],
     methods: {
-        obrisiProizvod(id){
+        obrisiProizvod(id, slika){
+            firebase.storage().ref('slike/' + slika).delete()
             db.collection('proizvodi').doc(id).delete()
-            .then(() =>{
-                this.obavijestObrisano()
-            })
         },
         obavijestObrisano(){
             setTimeout(() =>{

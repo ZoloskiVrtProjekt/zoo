@@ -24,15 +24,19 @@
                     <input v-model="zivotinja.tezina" type="number" class="form-control" placeholder="Težina">
                 </div>
                 <div class="col">
-                    <select v-model="zivotinja.nastambaOdabir" class="form-control" placeholder="Lijek">
+                    <select v-model="zivotinja.nastamba" class="form-control" placeholder="Nastamba">
                         <option value="">Odaberite nastambu</option>
-                        <option v-for="nastamba in nastambe" :key="nastamba.id">{{capitalizeFirstLetter(nastamba.ime)}}</option>  
+                        <option v-for="nastamba in nastambe" :key="nastamba.id">{{nastamba.ime}}</option>  
                     </select>
-                    <input v-model="zivotinja.prehrana" type="text" class="form-control" placeholder="Prehrana">
-                    <input v-model="zivotinja.dob" type="date" class="form-control" placeholder="Datum rođenja">
+                    <select v-model="zivotinja.prehrana" class="form-control" placeholder="Prehrana">
+                        <option value="">Odaberite prehranu</option>
+                        <option v-for="prehrana in prehrane" :key="prehrana.id">{{prehrana}}</option>  
+                    </select>
+                    <input v-model="zivotinja.datumRodenja" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" placeholder="Datum rođenja">
+                    <input v-model="zivotinja.datumDolazka" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" placeholder="Datum dolazka u zoo">
                 </div>              
             </div>
-            <button @click.prevent="dataPostoji" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="upisiPodatke" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template> 
@@ -49,32 +53,37 @@ export default {
             success:'',
             dodana:'',
             nastambe:[],
+            prehrane: ['Svejed', 'Biljojed', 'Mesojed'],
             zivotinja:{
                 broj:'',
                 ime:'',
                 pasmina:'',
-                nastambaOdabir:'',
+                nastamba:'',
                 tezina:'',
                 prehrana:'',
-                dob:'',
+                datumRodenja:'',
+                datumDolazka: ''
                 
             }
             
         }
     },
     created() {
-        //dohvaćamo sve nastambe u kojima ima slobodnih mjesta
-        let ref = db.collection('nastambe').where('slobodnaMjesta','>',0)
-            ref.get().then(snapshot => {
-                snapshot.forEach(doc => {
-                let nastamba = doc.data()
-                this.nastambe.push(nastamba)
-            });
-        })
+        this.dohvatiNastambe()
     },
     methods: {
+        dohvatiNastambe(){
+            //dohvaćamo sve nastambe u kojima ima slobodnih mjesta
+            let ref = db.collection('nastambe').where('slobodnaMjesta','>',0)
+                ref.get().then(snapshot => {
+                    snapshot.forEach(doc => {
+                    let nastamba = doc.data()
+                    this.nastambe.push(nastamba)
+                });
+            })
+        },
         //provjeravamo dali su sva polja unesena
-        validTest(){
+        podatciUneseni(){
             for(var key in this.zivotinja){
                 if(!this.zivotinja[key]){ 
                     return true
@@ -83,60 +92,44 @@ export default {
             return false
         },
 
-        dataPostoji(){
+        upisiPodatke(){
             this.success=''
             this.error=''
             
             //provjera popunjenost
-            if(this.validTest()){
+            if(this.podatciUneseni()){
                 this.error= 'Sva polja moraju biti popunjena'
             }else{
                 //ako životinja sa unesenim brojem već postoji izbaci nam error
                 let ref = db.collection('zivotinje').where('broj','==',this.zivotinja.broj)
                 ref.get().then((querySnapshot) =>{
-                if(!querySnapshot.empty){
-                    this.error= 'Životinja sa unesenim brojem već postoji'
-                }else{
-                    this.error = ''
+                    if(!querySnapshot.empty){
+                        this.error= 'Životinja sa unesenim brojem već postoji'
+                    }else{
+                        this.error = ''
 
-                    //dodajemo životinju
-                    db.collection('zivotinje').add({
-                        broj: this.zivotinja.broj,
-                        ime: this.zivotinja.ime,
-                        pasmina: this.zivotinja.pasmina,
-                        tezina: this.zivotinja.tezina,
-                        prehrana: this.zivotinja.prehrana,
-                        datumRodenja: this.zivotinja.dob,
-                        nastamba: this.zivotinja.nastambaOdabir.toLowerCase()
-                    }).then(() =>{
-
-                        //smanjujemo broj slobodnih mjesta nastambe u koju smo smjestili životinju
-                        db.collection('nastambe').where('ime','==',this.zivotinja.nastambaOdabir.toLowerCase()).get()
-                            .then((querySnapshot) =>{
-                                querySnapshot.forEach((doc) =>{                             
-                                    let id = doc.id
-                                    let dec = doc.data().slobodnaMjesta
-                                    dec--
-                                        db.collection('nastambe').doc(id).update({
-                                            slobodnaMjesta: dec
-                                        })
-                                    
+                        //dodajemo životinju
+                        db.collection('zivotinje').add(this.zivotinja)
+                        .then(() =>{
+                            //smanjujemo broj slobodnih mjesta nastambe u koju smo smjestili životinju
+                            db.collection('nastambe').where('ime','==',this.zivotinja.nastamba.toLowerCase()).get()
+                                .then((querySnapshot) =>{
+                                    querySnapshot.forEach((doc) =>{                             
+                                        let id = doc.id
+                                        let dec = doc.data().slobodnaMjesta
+                                        dec--
+                                            db.collection('nastambe').doc(id).update({
+                                                slobodnaMjesta: dec
+                                            })
+                                        
+                                    })
                                 })
-                            })
-                        this.success= 'Zivotinja dodana'
-                        
-                    })
-                }
-            })
-            }
-            
-            
+                            this.success= 'Zivotinja dodana'  
+                        })
+                    }
+                })
+            }       
         },
-
-
-        capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
 
 
     },

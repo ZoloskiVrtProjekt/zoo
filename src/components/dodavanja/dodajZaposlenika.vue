@@ -15,8 +15,8 @@
         <form>
             <div class="row">
                 <div class="col">
-                    <input v-model="email" type="text" class="form-control" placeholder="Email">
-                    <input v-model="password" type="password" class="form-control" placeholder="Passoword">
+                    <input v-model="osoba.email" type="text" class="form-control" placeholder="Email">
+                    <input v-model="password" type="password" class="form-control" placeholder="Password">
 
                     <select v-model="osoba.posao" class="form-control" placeholder="Posao">
                         <option value="">Odaberite posao</option>
@@ -31,7 +31,7 @@
                     <input v-model="osoba.adresa" type="text" class="form-control" placeholder="adresa">
                 </div>              
             </div>
-            <button @click.prevent="signUp" class="btn btn-primary my-1">Dodaj</button>
+            <button @click.prevent="dodajZaposlenika" class="btn btn-primary my-1">Dodaj</button>
         </form>
     </div>
 </template>
@@ -52,22 +52,22 @@ export default {
                 prezime:'',
                 brojMobitela:'',
                 adresa:'',
-                posao:''
+                posao:'',
+                email:''
             },
-            email:'',
             password:'',
             feedback:'',
             success:''
         }
     },
     methods: {
-        signUp(){
-            if(this.validTest()){
+        dodajZaposlenika(){
+            if(this.podatciUneseni()){
                 this.feedback= 'Unesite sva polja'
             }
             else{
                 //iz varijable email brišemo sve znakove, umjesto razmaka stavljamo - i pretvaramo sve u mala slova
-                this.slug= slugify(this.email,{
+                this.slug= slugify(this.osoba.email,{
                     replacement:'-',
                     remove: /[*+~.()'"!:@]/g,
                     lower: true
@@ -80,20 +80,11 @@ export default {
                     }else
                     {
                        var createUser = firebase.functions().httpsCallable('createUser');
-                        createUser({email: this.email, password: this.password})
+                        createUser({email: this.osoba.email, password: this.password})
                         .then(() => {
-                            ref.set({
-                                    email: this.email,
-                                    password: this.password,
-                                    ime:this.osoba.ime,
-                                    prezime:this.osoba.prezime,
-                                    posao:this.osoba.posao,
-                                    adresa:this.osoba.adresa,
-                                    brojMobitela: this.osoba.brojMobitela 
-                                }).then(()=>{
-                                    this.osoba= '',
-                                    this.password = '',
-                                    this.email = ''
+                            ref.set(this.osoba)
+                            .then(()=>{
+                                    this.osoba=''
                                     this.success = 'Zaposlenik dodan'
                                     setTimeout(()=>{
                                         this.vrati()
@@ -109,7 +100,7 @@ export default {
         vrati(){
             this.$router.go(-1)
         },
-        validTest(){
+        podatciUneseni(){
             for(var key in this.osoba){
                 if(!this.osoba[key]){ 
                     return true

@@ -2,9 +2,7 @@
   <div class="životinje">
     <div class="container">
       <input v-model="searchTerm" class="search form-control mr-sm-2" type="search" placeholder="Broj životinje" aria-label="Search">
-      
-      
-      
+   
       <router-link :to="'dodaj_zivotinju'">
         <button class="btn btn-success">Dodaj zivotinju</button>
       </router-link>
@@ -61,7 +59,7 @@ export default {
   methods: {
     //metoda za brisanje životinje, prima broj životinje, ime nastambe i id te životinje
     obrisiZivotinju(id, broj, nastamba){
-
+ 
       //biršemo sve tretmane odabrane životinje
       db.collection('tretmani').where('brojZivotinje','==',Number(broj)).get()
         .then((querySnapshot) =>{
@@ -97,7 +95,7 @@ export default {
         this.obavijest = false
       }, 3000);
      },
-     citaj(){
+     dohvatiPodatke(){
        //slušamo tablicu zivotinje
         let ref = db.collection('zivotinje')
           ref.onSnapshot(snapshot =>{
@@ -112,8 +110,8 @@ export default {
               }
               //u slučaju da je izbrisan brišemo ga stranice
               else if(change.type === "removed"){
-                this.zivotinje = this.zivotinje.filter(zivotinje => {
-                  return zivotinje.id != change.doc.id
+                this.zivotinje = this.zivotinje.filter(zivotinja => {
+                  return zivotinja.id != change.doc.id
                 })
               }              
             })
@@ -123,7 +121,7 @@ export default {
   },
   //u ciklusu created pozivamo funkciju čitaj koja dobavlja sve podatke
   created() {
-    this.citaj() 
+    this.dohvatiPodatke() 
   },
   computed: {
     filteredCards() {

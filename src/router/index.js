@@ -33,7 +33,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/zivotinje',
     name: 'zivotinje',
     component: Zivotinje,
     meta:{
@@ -42,7 +42,7 @@ const routes = [
     }
   },
   {
-    path: '/webshop',
+    path: '/',
     name: 'webshop',
     component: webshop,
     meta:{

@@ -14,7 +14,7 @@ export default new Vuex.Store({
     
   },
   mutations: {
-    postaviLoged(state, status) {
+    postaviLogged(state, status) {
       state.logged = status;
     },
     postaviPosao(state, status) {
@@ -39,7 +39,13 @@ export default new Vuex.Store({
       }
     },
     isprazniKosaricu(state,stanje){
-      state.kosarica=stanje    }
+      state.kosarica=stanje
+    },
+    izbaciIzKosarice(state, id){
+      state.kosarica = state.kosarica.filter(kosarica => {
+        return kosarica.id != id
+      })
+    }
   },
   actions: {
   },
