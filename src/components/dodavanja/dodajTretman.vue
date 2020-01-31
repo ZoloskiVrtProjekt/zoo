@@ -71,7 +71,6 @@ export default {
             //u slučaju da se pokuša dodati tretman za nepostojeću životinju nas redirecta na stranicu životinje
             db.collection('zivotinje').where('broj','==',this.$route.params.brojZivotinje).get()
             .then((querySnapshot) =>{
-                console.log(querySnapshot)
                 if(querySnapshot.empty){
                     this.error= 'Životinja više ne postoji'
                      setTimeout(() =>{
